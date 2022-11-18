@@ -2,26 +2,26 @@
 .. project information
 .. |title| replace:: Omega
 .. |slug| replace:: **cs1302-omega**
-.. |semester| replace:: Spring 2022
-.. |version| replace:: v2022.sp
+.. |semester| replace:: Fall 2022
+.. |version| replace:: v2022.fa
 .. |team_size| replace:: 1
 .. |banner| image:: https://github.com/cs1302uga/cs1302-omega/raw/main/resources/readme-banner.png
    :alt: Image from page 400 of "The Palm of Alpha Tau Omega" (1880)
 
 .. deadlines
-.. |deadline1| replace:: MON 2022-05-09 (MAY 09) @ 03:00 PM EST
-.. |deadline2| replace:: TUE 2022-05-10 (MAY 10) @ 03:00 PM EST
-.. |deadline3| replace:: WED 2022-05-11 (MAY 11) @ 03:00 PM EST
+.. |deadline1| replace:: MON 2022-12-12 (DEC 12) @ 03:30 PM EST
+.. |deadline2| replace:: TUE 2022-12-13 (DEC 13) @ 03:30 PM EST
+.. |deadline3| replace:: WED 2022-12-14 (DEC 14) @ 03:30 PM EST
 
 .. deadline section links
-.. _deadline1: #deadline-option-1-mon-2022-05-09-may-09--0300-pm-est
-.. _deadline2: #deadline-option-2-tue-2022-05-10-may-10--0300-pm-est
-.. _deadline3: #deadline-option-3-wed-2022-05-11-may-11--0300-pm-est
+.. _deadline1: #deadline-option-1-mon-2022-12-12-dec-12--0330-pm-est
+.. _deadline2: #deadline-option-2-tue-2022-12-13-dec-13--0330-pm-est
+.. _deadline3: #deadline-option-3-wed-2022-12-14-dec-14--0330-pm-est
 
 .. notices (need to manually update the urls)
 .. |team_size_notice| image:: https://img.shields.io/badge/Team%20Size-1-informational
    :alt: Team Size |team_size|
-.. |approval_notice| image:: https://img.shields.io/badge/Approved%20for-Spring%202022-purple
+.. |approval_notice| image:: https://img.shields.io/badge/Approved%20for-Fall%202022-darkgreen
    :alt: Approved for: |version|
 
 CSCI 1302 - |title| |version|
