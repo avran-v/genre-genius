@@ -204,17 +204,20 @@ Primary Functions (90 points)
    :External API Tool:
       For an **External API Tool**, this means that your app integrates two or
       more external RESTful JSON APIs based on user input and combines the
-      responses in some meaningful / interesting way. It also means that
-      users can do whatever it is you say your app can do in the description
-      that you provide for your app as part of Deadline 3.
+      responses in some meaningful / interesting way. Combining responses means
+      that the response from one API should be used (at least in part) to query
+      the second API. Your application must automate the process of connecting
+      two different APIs for a single purpose. Failure to meet this requirement
+      will result in a grade of 0 for this category. If you have questions about 
+      whether or not your idea is sufficient, please discuss it with an instructor.
 
    :Arcade Game:
       For an **Arcade Game**, this means that the visuals and game
       mechanics are easily recognizable and consistent with traditional implementations
       of the game you chose, and that you utilized either keyboard event handlers
-      or mouse event handlers that aren't related to one or more buttons. It also means
-      that users can do whatever it is you say your app can do in the description
-      that you provide for your app as part of Deadline 3.
+      or mouse event handlers that aren't related to one or more buttons. Failure to meet 
+      this requirement will result in a grade of 0 for this category. If you have questions about 
+      whether or not your idea is sufficient, please discuss it with an instructor.
 
 Multiple Uses per Execution (10 points)
    After the application is started,
@@ -381,8 +384,7 @@ Non-Discrimination and Anti-Harassment Policy
 
 Private GitHub-hosted Git Repository
    Each student is required to setup a private GitHub-hosted Git repository
-   for their project with the CSCI 1302 course instructors for this semester
-   added as collaborators. **Instructions are provided later in this document.**
+   for their project. **Instructions are provided later in this document.**
 
 Working on a Local Machine
    If you decide to work on part or all of the project on your local machine,
