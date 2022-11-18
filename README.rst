@@ -260,6 +260,15 @@ User-Friendly Experience (10 points)
       If a grader encounters lag, then they will try to run your application
       locally after first checking that it compiles on Odin.
 
+**Private** GitHub-hosted Git Repository (20 points)
+   Each student is required to setup a private GitHub-hosted Git repository
+   for their project. Failure to make your repository private will result in
+   a 20-point penalty. If you are unsure whether your repository is private,
+   ask an instructor or TA to visit the main URL of your project.
+   
+   **Reminder:** Hosting any CSCI 1302 assignment in a public repository may
+   lead to an academic honesty violation.
+
 Local Assets / Resources (10 points)
    All assets (e.g., images), except
    for assets discovered using an external API, need to be pre-downloaded and
