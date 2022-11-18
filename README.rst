@@ -364,15 +364,15 @@ Final Project == Final Exam
 
 Final Submission Deadline
    Please take care to note the date/time for final submission deadline,
-   **Deadline 3**. In particular, the deadline time is 03:00 PM, which is earlier
+   **Deadline 3**. In particular, the deadline time is earlier
    in the day compared to previous projects.
 
 Amended Late Work Policy
    For both logistical and policy-related reasons, the usual late work policy
-   will not apply for this project, and **no late submissions will be accepted after
-   |deadline3|**.
+   will not apply for this project, and no late submissions will be accepted after
+   |deadline3|_.
    
-   Final submissions received after |deadline3| will not be graded.
+   Final submissions received after |deadline3|_ will not be graded.
 
 Non-Discrimination and Anti-Harassment Policy
    Since this project affords you more flexibility with respect to the content of your
