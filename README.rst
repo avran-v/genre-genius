@@ -7,6 +7,10 @@
 .. |team_size| replace:: 1
 .. |banner| image:: https://github.com/cs1302uga/cs1302-omega/raw/main/resources/readme-banner.png
    :alt: Image from page 400 of "The Palm of Alpha Tau Omega" (1880)
+.. |compile_points| replace:: 100
+.. |style_points_each| replace:: 5
+.. |style_points_max| replace:: 20
+.. |server| replace:: Odin
 
 .. deadlines
 .. |deadline1| replace:: MON 2022-12-12 (DEC 12) @ 03:30 PM EST
@@ -271,25 +275,17 @@ Local Assets / Resources (10 points)
    ``resources/foo/img.png``  ``"file:resources/foo/img.png"``
    =========================  ================================
 
-Code Style Guidelines (20 points)
-   You should be consistent with the style
-   aspect of your code in order to promote readability. Every ``.java`` file that
-   you include as part of your submission for this project must be in valid style
-   as defined in the |styleguide|_. All of the individual code style guidelines
-   listed in that document are part of this single non-functional requirement.
-   Like the other non-functional requirements, this requirement is all or nothing.
+Code Style (|style_points_max|)
+   Every ``.java`` file that you include as part of your submission for this project must
+   be in valid style as defined in the `CS1302 Code Style Guide <styleguide>`_. All of the
+   individual code style guidelines listed in the style guide document are considered for
+   this requirement.
 
-   :NOTE:
-      The |styleguide|_ includes instructions on how to use the ``check1302``
-      program to check your code for compliance on Odin.
+   If ``check1302`` on |server| reports any style violations for your submission, then
+   |style_points_each| points will be subtracted from your earned point total **for each
+   violation**, up to a maximum deduction of |style_points_max| points.
 
-   .. |styleguide| replace:: CS1302 Code Style Guide
    .. _styleguide: https://github.com/cs1302uga/cs1302-styleguide
-
-In-line Documentation (10 points)
-   Code blocks should be adequately documented
-   using in-line comments. This is especially necessary when a block of code
-   is not immediately understood by a reader (e.g., yourself or the grader).
 
 Attribution (10 points)
    Proper attribution should be given for **all assets**
