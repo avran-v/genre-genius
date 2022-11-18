@@ -370,12 +370,9 @@ Final Submission Deadline
 Amended Late Work Policy
    For both logistical and policy-related reasons, the usual late work policy
    will not apply for this project, and **no late submissions will be accepted after
-   11:59:59 PM on WED 2022-05-11 (May 11)**.
-   You can still submit late for partial credit, but late submissions will only be
-   accepted between **03:00:01 PM -- 11:59:59 PM on WED 2022-05-11 (May 11)**;
-   submissions received during that time frame will incur the standard
-   penalty for one day late. Final submissions received after the acceptance
-   window will not be graded.
+   |deadline3|**.
+   
+   Final submissions received after |deadline3| will not be graded.
 
 Non-Discrimination and Anti-Harassment Policy
    Since this project affords you more flexibility with respect to the content of your
