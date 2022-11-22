@@ -175,7 +175,7 @@ app look and feel however you want (keep it appropriate).
 Remember, part of software development is being given a goal but not necessarily being
 given instruction on all of the details needed to accomplish that goal. For example, even
 though working with things like keyboard events, mouse events, or API keys have not
-been explicitly covered in class, you may need to are going to need to look up how to
+been explicitly covered in class, you are going to need to look up how to
 do these things in order to complete this project.
 
 Learning Outcomes
