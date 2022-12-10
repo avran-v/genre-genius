@@ -34,6 +34,7 @@ import com.google.gson.GsonBuilder;
 import java.lang.StringBuilder;
 
 import cs1302.omega.lastfm.*;
+import cs1302.omega.LyricDisplay;
 
 /**
  * REPLACE WITH NON-SHOUTING DESCRIPTION OF YOUR APP.
@@ -59,6 +60,8 @@ public class OmegaApp extends Application {
 
     String[] topTrackNames;
     String[] topTrackArtists;
+
+    LyricDisplay[] lyricDisplays;
 
     /**
      * Constructs an {@code OmegaApp} object. This default (i.e., no argument)
@@ -89,8 +92,19 @@ public class OmegaApp extends Application {
             genreBox.getChildren().add(genreButton);
             genreButtons[i] = genreButton;
         }
+
+        lyricDisplays = new LyricDisplay[3];
+        VBox lyricBox = new VBox();
+        for(int i = 0; i < 3; i++){
+            LyricDisplay lyricDisplay = new LyricDisplay();
+            lyricDisplay.getRevealButton().setOnAction(e -> lyricDisplay.revealInfo());
+            lyricBox.getChildren().add(lyricDisplay);
+            lyricDisplays[i] = lyricDisplay;
+        }
+        HBox mainContent = new HBox();
+        mainContent.getChildren().addAll(genreBox, lyricBox);
         root.getChildren().add(title);
-        root.getChildren().add(genreBox);
+        root.getChildren().add(mainContent);
         /*// demonstrate how to load local asset using "file:resources/"
         Image bannerImage = new Image("file:resources/readme-banner.png");
         ImageView banner = new ImageView(bannerImage);
@@ -183,6 +197,9 @@ public class OmegaApp extends Application {
         for(int i = 0; i < genreButtons.length; i++){
             genreButtons[i].setDisable(true);
         }
+        for(int i = 0; i < lyricDisplays.length; i++){
+            lyricDisplays[i].hideInfo();
+        }
         try {
             String modTag = URLEncoder.encode(tag, StandardCharsets.UTF_8);
             String query = String.format
@@ -212,12 +229,21 @@ public class OmegaApp extends Application {
                 System.out.println(topTrackNames[chosenTracks[i]]);
                 System.out.println(topTrackArtists[chosenTracks[i]]);
             }
+            updateLyricDisplays(chosenTracks);
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
             e.printStackTrace();
         }
         for(int i = 0; i < genreButtons.length; i++){
             genreButtons[i].setDisable(false);
+        }
+    }
+
+    public void updateLyricDisplays(int[] chosenTracks) {
+        for(int i = 0; i < lyricDisplays.length; i++){
+            lyricDisplays[i].setTrackName(topTrackNames[chosenTracks[i]]);
+            lyricDisplays[i].setTrackArtist(topTrackArtists[chosenTracks[i]]);
+            lyricDisplays[i].enableInfo();
         }
     }
 
