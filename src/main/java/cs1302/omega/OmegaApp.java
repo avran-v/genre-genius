@@ -31,6 +31,8 @@ import java.nio.charset.StandardCharsets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.lang.StringBuilder;
+
 import cs1302.omega.lastfm.*;
 
 /**
@@ -55,6 +57,9 @@ public class OmegaApp extends Application {
     String mmapikey;
     String configPath;
 
+    String[] topTrackNames;
+    String[] topTrackArtists;
+
     /**
      * Constructs an {@code OmegaApp} object. This default (i.e., no argument)
      * constructor is executed in Step 2 of the JavaFX Application Life-Cycle.
@@ -77,8 +82,12 @@ public class OmegaApp extends Application {
         VBox genreBox = new VBox();
         String[] genres = getTopGenres();
         int[] randomNums = getRandomNums(6, 50);
+        Button[] genreButtons = new Button[6];
         for(int i = 0; i < 6; i++){
-            genreBox.getChildren().add(new Button(genres[randomNums[i]].toLowerCase()));
+            Button genreButton = new Button(genres[randomNums[i]].toLowerCase());
+            genreButton.setOnAction(e -> getTopTracks(genreButton.getText(),genreButtons));
+            genreBox.getChildren().add(genreButton);
+            genreButtons[i] = genreButton;
         }
         root.getChildren().add(title);
         root.getChildren().add(genreBox);
@@ -168,6 +177,48 @@ public class OmegaApp extends Application {
             }
         }
         return randomNums;
+    }
+
+    public void getTopTracks(String tag, Button[] genreButtons){
+        for(int i = 0; i < genreButtons.length; i++){
+            genreButtons[i].setDisable(true);
+        }
+        try {
+            String modTag = URLEncoder.encode(tag, StandardCharsets.UTF_8);
+            String query = String.format
+                ("?method=tag.gettoptracks&tag=%s&api_key=%s&format=json", modTag, lfapikey);
+            String uri = LASTFM_API + query;
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .build();
+            HttpResponse<String> response = HTTP_CLIENT
+                .send(request, BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                System.out.println("Something is wrong.");
+            }
+            String jsonString = response.body();
+            TopTracksResponse tracksResponse =
+                GSON.fromJson(jsonString, cs1302.omega.lastfm.TopTracksResponse.class);
+            int tracksNum = tracksResponse.getTracks().getTrack().length;
+            topTrackNames = new String[tracksNum];
+            topTrackArtists = new String[tracksNum];
+            for (int i = 0; i < tracksNum; i++){
+                Track track = tracksResponse.getTracks().getTrack()[i];
+                topTrackNames[i] = track.getName();
+                topTrackArtists[i] = track.getArtist().getName();
+            }
+            int[] chosenTracks = getRandomNums(3, tracksNum);
+            for (int i = 0; i < 3; i++){
+                System.out.println(topTrackNames[chosenTracks[i]]);
+                System.out.println(topTrackArtists[chosenTracks[i]]);
+            }
+        } catch (IOException | InterruptedException e) {
+            System.err.println(e);
+            e.printStackTrace();
+        }
+        for(int i = 0; i < genreButtons.length; i++){
+            genreButtons[i].setDisable(false);
+        }
     }
 
 } // OmegaApp
