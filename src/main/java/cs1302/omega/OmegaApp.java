@@ -76,8 +76,9 @@ public class OmegaApp extends Application {
         this.setAPIKeys();
         VBox genreBox = new VBox();
         String[] genres = getTopGenres();
-        for(int i = 0; i < 3; i++){
-            genreBox.getChildren().add(new Button(genres[i]));
+        int[] randomNums = getRandomNums(6, 50);
+        for(int i = 0; i < 6; i++){
+            genreBox.getChildren().add(new Button(genres[randomNums[i]].toLowerCase()));
         }
         root.getChildren().add(title);
         root.getChildren().add(genreBox);
@@ -150,6 +151,23 @@ public class OmegaApp extends Application {
             e.printStackTrace();
         }
         return new String[0];
+    }
+
+    public int[] getRandomNums(int total, int max) {
+        int[] randomNums = new int[total];
+        for(int i = 0; i < total; i++){
+            randomNums[i] = (int)Math.floor(Math.random()*(max+1));
+            for(int a = 0; a < total; a++){
+                if(randomNums[a] == randomNums[i]){
+                    if(randomNums[i] + 1 < max){
+                        randomNums[i] += 1;
+                    } else {
+                        randomNums[i] -= 1;
+                    }
+                }
+            }
+        }
+        return randomNums;
     }
 
 } // OmegaApp
