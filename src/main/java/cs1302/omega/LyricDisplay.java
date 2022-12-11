@@ -55,6 +55,10 @@ public class LyricDisplay extends VBox{
         artistName.setText(newArtist);
     }
 
+    public void setLyricSnippet(String snippet){
+        lyricSnippet.setText(snippet);
+    }
+
     public void enableInfo(){
         revealInfo.setDisable(false);
     }
