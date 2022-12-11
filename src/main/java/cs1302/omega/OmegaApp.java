@@ -34,6 +34,8 @@ import com.google.gson.GsonBuilder;
 import java.lang.StringBuilder;
 
 import cs1302.omega.lastfm.*;
+import cs1302.omega.mmsearch.*;
+import cs1302.omega.mmsnippet.*;
 import cs1302.omega.LyricDisplay;
 
 /**
@@ -49,6 +51,7 @@ public class OmegaApp extends Application {
         .setPrettyPrinting()
         .create();
     private static final String LASTFM_API = "http://ws.audioscrobbler.com/2.0/";
+    private static final String MM_API = "https://api.musixmatch.com/ws/1.1/";
     private Stage stage;
     private Scene scene;
     private VBox root;
@@ -60,6 +63,11 @@ public class OmegaApp extends Application {
 
     String[] topTrackNames;
     String[] topTrackArtists;
+    int[] mmIds;
+    String[] chosenTrackNames;
+    String[] chosenTrackArtists;
+    String[] snippets;
+    Button[] genreButtons;
 
     LyricDisplay[] lyricDisplays;
 
@@ -85,7 +93,7 @@ public class OmegaApp extends Application {
         VBox genreBox = new VBox();
         String[] genres = getTopGenres();
         int[] randomNums = getRandomNums(6, 50);
-        Button[] genreButtons = new Button[6];
+        genreButtons = new Button[6];
         for(int i = 0; i < 6; i++){
             Button genreButton = new Button(genres[randomNums[i]].toLowerCase());
             genreButton.setOnAction(e -> getTopTracks(genreButton.getText(),genreButtons));
@@ -224,26 +232,100 @@ public class OmegaApp extends Application {
                 topTrackNames[i] = track.getName();
                 topTrackArtists[i] = track.getArtist().getName();
             }
-            int[] chosenTracks = getRandomNums(3, tracksNum);
-            for (int i = 0; i < 3; i++){
-                System.out.println(topTrackNames[chosenTracks[i]]);
-                System.out.println(topTrackArtists[chosenTracks[i]]);
-            }
-            updateLyricDisplays(chosenTracks);
+            trackSearch();
+            /*for(int i = 0; i < genreButtons.length; i++){
+                genreButtons[i].setDisable(false);
+                }*/
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
             e.printStackTrace();
+        }
+    }
+
+    public void updateLyricDisplays(int[] chosenTracks) {
+        //update this to use the chosen arrays + add snippet
+        for(int i = 0; i < lyricDisplays.length; i++){
+            lyricDisplays[i].setTrackName(chosenTrackNames[chosenTracks[i]]);
+            lyricDisplays[i].setTrackArtist(chosenTrackArtists[chosenTracks[i]]);
+            lyricDisplays[i].setLyricSnippet(snippets[chosenTracks[i]]);
+            lyricDisplays[i].enableInfo();
         }
         for(int i = 0; i < genreButtons.length; i++){
             genreButtons[i].setDisable(false);
         }
     }
 
-    public void updateLyricDisplays(int[] chosenTracks) {
-        for(int i = 0; i < lyricDisplays.length; i++){
-            lyricDisplays[i].setTrackName(topTrackNames[chosenTracks[i]]);
-            lyricDisplays[i].setTrackArtist(topTrackArtists[chosenTracks[i]]);
-            lyricDisplays[i].enableInfo();
+    public void trackSearch() {
+        try {
+            int count = 0;
+            mmIds = new int[topTrackNames.length];
+            chosenTrackNames = new String[topTrackNames.length];
+            chosenTrackArtists = new String[topTrackNames.length];
+            for(int i = 0; i < topTrackNames.length; i++){
+                String artist = URLEncoder.encode(topTrackArtists[i], StandardCharsets.UTF_8);
+                String track = URLEncoder.encode(topTrackNames[i], StandardCharsets.UTF_8);
+                String query = String.format
+                    ("track.search?q_artist=%s&q_track=%s&s_track_rating=desc&apikey=%s",
+                    artist, track, mmapikey);
+                String uri = MM_API + query;
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(uri))
+                    .build();
+                HttpResponse<String> response = HTTP_CLIENT
+                    .send(request, BodyHandlers.ofString());
+                if (response.statusCode() != 200) {
+                    System.out.println("Something is wrong.");
+                }
+                String jsonString = response.body();
+                TrackSearchResponse searchResponse =
+                    GSON.fromJson(jsonString, cs1302.omega.mmsearch.TrackSearchResponse.class);
+                // make response into track search object
+                MMTrack topResult =
+                    searchResponse.getMessage().getBody().getTrackList()[0].getTrack();
+                if(topResult.getHasLyrics() > 0){
+                    MMTrack chosen = topResult;
+                    mmIds[count] = chosen.getTrackID();
+                    chosenTrackNames[count] = chosen.getTrackName();
+                    chosenTrackArtists[count] = chosen.getArtistName();
+                    count++;
+                }
+            }
+            int chosenTracks[] = getRandomNums(3, mmIds.length);
+            //updateLyricDisplays(chosenTracks);
+            getSnippet();
+        } catch (IOException | InterruptedException e) {
+            System.err.println(e);
+            e.printStackTrace();
+        }
+    }
+
+    public void getSnippet() {
+        try {
+            snippets = new String[mmIds.length];
+            int[] randomTracks = getRandomNums(3, mmIds.length);
+            for(int i = 0; i < mmIds.length; i++){
+                String trackID = "" + mmIds[i];
+                String query = String.format
+                    ("track.snippet.get?apikey=%s&track_id=%s", mmapikey, trackID);
+                String uri = MM_API + query;
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(uri))
+                    .build();
+                HttpResponse<String> response = HTTP_CLIENT
+                    .send(request, BodyHandlers.ofString());
+                if (response.statusCode() != 200) {
+                    System.out.println("Something is wrong.");
+                }
+                String jsonString = response.body();
+                SnippetResponse snippetResponse =
+                    GSON.fromJson(jsonString, cs1302.omega.mmsnippet.SnippetResponse.class);
+                //get snippet and add to array
+                snippets[i] = snippetResponse.getMessage().getBody().getSnippet().getSnippetBody();
+            }
+            updateLyricDisplays(randomTracks);
+        } catch (IOException | InterruptedException e) {
+            System.err.println(e);
+            e.printStackTrace();
         }
     }
 
