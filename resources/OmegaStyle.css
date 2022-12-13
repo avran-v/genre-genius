@@ -1,0 +1,36 @@
+.root{
+    -fx-background-color: #ADD8E6;
+    -fx-font-size: 14pt;
+    -fx-alignment: CENTER;
+    -fx-padding: 7 2 7 2;
+}
+.lyric-display{
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+}
+
+.app-info-normal{
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+}
+
+.app-info-error{
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: red;
+    -fx-background-color: #ff6961
+}
+
+.app-info-loading{
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: yellow;
+    -fx-background-color: #FDFD96;
+}
+
+.app-info.loaded{
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+    -fx-border-color: green;
+    -fx-background-color: #77DD77;
+}

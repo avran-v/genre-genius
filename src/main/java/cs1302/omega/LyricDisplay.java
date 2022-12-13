@@ -8,8 +8,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
+import javafx.geometry.Pos;
 
-public class LyricDisplay extends VBox{
+public class LyricDisplay extends VBox {
     VBox lyricDisplay;
     Label lyricSnippet;
     Button revealInfo;
@@ -28,12 +29,12 @@ public class LyricDisplay extends VBox{
         revealInfo = new Button("Reveal Info");
         revealInfo.setDisable(true);
 
-        artistLabel = new Label("Artist");
+        artistLabel = new Label("Artist Name:");
         artistName = new Label("Sample Artist Name");
         artistInfo = new VBox();
         artistInfo.getChildren().addAll(artistLabel, artistName);
 
-        trackLabel = new Label("Track");
+        trackLabel = new Label("Track Name:");
         trackName = new Label("Sample Track Name");
         trackNameInfo = new VBox();
         trackNameInfo.getChildren().addAll(trackLabel, trackName);
@@ -44,35 +45,37 @@ public class LyricDisplay extends VBox{
         trackInfo.getChildren().addAll(trackNameInfo, artistInfo);
 
         lyricDisplay.getChildren().addAll(lyricSnippet, revealInfo, trackInfo);
+        lyricDisplay.setAlignment(Pos.TOP_CENTER);
+        lyricDisplay.getStyleClass().add("lyric-display");
         this.getChildren().add(lyricDisplay);
     }
 
-    public void setTrackName(String newName){
+    public void setTrackName(String newName) {
         trackName.setText(newName);
     }
 
-    public void setTrackArtist(String newArtist){
+    public void setTrackArtist(String newArtist) {
         artistName.setText(newArtist);
     }
 
-    public void setLyricSnippet(String snippet){
+    public void setLyricSnippet(String snippet) {
         lyricSnippet.setText(snippet);
     }
 
-    public void enableInfo(){
+    public void enableInfo() {
         revealInfo.setDisable(false);
     }
 
-    public Button getRevealButton(){
+    public Button getRevealButton() {
         return revealInfo;
     }
 
-    public void revealInfo(){
+    public void revealInfo() {
         artistName.setVisible(true);
         trackName.setVisible(true);
     }
 
-    public void hideInfo(){
+    public void hideInfo() {
         artistName.setVisible(false);
         trackName.setVisible(false);
     }
