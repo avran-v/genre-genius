@@ -1,24 +1,34 @@
 package cs1302.omega.mmsearch;
 
+import com.google.gson.annotations.SerializedName;
+
 public class MMTrack {
-    private int track_id;
-    private int has_lyrics;
-    private String artist_name;
-    private String track_name;
+
+    @SerializedName("track_id")
+    private int trackID;
+
+    @SerializedName("has_lyrics")
+    private int hasLyrics;
+
+    @SerializedName("artist_name")
+    private String artistName;
+
+    @SerializedName("track_name")
+    private String trackName;
 
     public int getTrackID() {
-        return track_id;
+        return trackID;
     }
 
     public int getHasLyrics() {
-        return has_lyrics;
+        return hasLyrics;
     }
 
     public String getArtistName() {
-        return artist_name;
+        return artistName;
     }
 
     public String getTrackName(){
-        return track_name;
+        return trackName;
     }
 }
