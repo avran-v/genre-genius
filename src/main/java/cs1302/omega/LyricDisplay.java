@@ -14,11 +14,11 @@ public class LyricDisplay extends VBox {
     VBox lyricDisplay;
     Label lyricSnippet;
     Button revealInfo;
-    HBox trackInfo;
-    VBox artistInfo;
+    VBox trackInfo;
+    HBox artistInfo;
     Label artistLabel;
     Label artistName;
-    VBox trackNameInfo;
+    HBox trackNameInfo;
     Label trackLabel;
     Label trackName;
 
@@ -27,21 +27,24 @@ public class LyricDisplay extends VBox {
         lyricDisplay = new VBox();
         lyricSnippet = new Label("Lyrics coming soon...");
         revealInfo = new Button("Reveal Info");
+        revealInfo.getStyleClass().add("reveal-info");
         revealInfo.setDisable(true);
 
         artistLabel = new Label("Artist Name:");
         artistName = new Label("Sample Artist Name");
-        artistInfo = new VBox();
+        artistInfo = new HBox();
         artistInfo.getChildren().addAll(artistLabel, artistName);
+        artistInfo.getStyleClass().add("artist-info");
 
         trackLabel = new Label("Track Name:");
         trackName = new Label("Sample Track Name");
-        trackNameInfo = new VBox();
+        trackNameInfo = new HBox();
         trackNameInfo.getChildren().addAll(trackLabel, trackName);
+        trackNameInfo.getStyleClass().add("track-name-info");
 
         hideInfo();
 
-        trackInfo = new HBox();
+        trackInfo = new VBox();
         trackInfo.getChildren().addAll(trackNameInfo, artistInfo);
 
         lyricDisplay.getChildren().addAll(lyricSnippet, revealInfo, trackInfo);

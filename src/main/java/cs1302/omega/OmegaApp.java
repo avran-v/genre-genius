@@ -40,7 +40,9 @@ import cs1302.omega.mmsnippet.*;
 import cs1302.omega.LyricDisplay;
 
 import javafx.geometry.Pos;
-import java.lang.IllegalStateException;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.ColumnConstraints;
 
 /**
  * REPLACE WITH NON-SHOUTING DESCRIPTION OF YOUR APP.
@@ -102,29 +104,33 @@ public class OmegaApp extends Application {
     public void start(Stage stage) {
         this.stage = stage;
         Text attribution = new Text("Made with the LastFM and Musixmatch APIs");
+        attribution.getStyleClass().add("attribution");
         title = new Text("Genre Genius!");
+        title.getStyleClass().add("title");
         instructions = new Text
             ("Choose a genre, can you can guess a song's name \n" +
             " and artist from a snippet of the lyrics?");
+        instructions.getStyleClass().add("instructions");
         this.setAPIKeys();
         VBox genreBox = new VBox();
         Text genreTitle = new Text ("Genres:");
-        genreBox.setPrefWidth(300);
         genreBox.setAlignment(Pos.CENTER);
         genreBox.getChildren().add(genreTitle);
         String[] genres = getTopGenres();
         int[] randomNums = getRandomNums(6, 50);
-        genreButtons = new Button[6];
-        for (int i = 0; i < 6; i++) {
+        genreButtons = new Button[3];
+        for (int i = 0; i < 3; i++) {
             Button genreButton = new Button(genres[randomNums[i]].toLowerCase());
             genreButton.setOnAction(e -> {
-                getTopTracks(genreButton.getText(),genreButtons);
+                runNow(() -> getTopTracks(genreButton.getText(),genreButtons));
             });
+            genreButton.getStyleClass().add("genre-button");
             genreBox.getChildren().add(genreButton);
             genreButtons[i] = genreButton;
         }
 
         shuffleButton = new Button("Shuffle genres!");
+        shuffleButton.getStyleClass().add("shuffle-button");
         shuffleButton.setOnAction(e -> runNow(() -> Platform.runLater(() -> shuffleGenres())));
         genreBox.getChildren().add(shuffleButton);
 
@@ -136,8 +142,15 @@ public class OmegaApp extends Application {
             lyricBox.getChildren().add(lyricDisplay);
             lyricDisplays[i] = lyricDisplay;
         }
-        lyricBox.setPrefWidth(400);
-        HBox mainContent = new HBox();
+        GridPane mainContent = new GridPane();
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth(35);
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setPercentWidth(65);
+        mainContent.getColumnConstraints().addAll(col1, col2);
+        mainContent.add(genreBox, 0, 0);
+        mainContent.add(lyricBox, 1, 0);
+
         mainContent.setId("main-content");
         appInfo = new Label("Once you choose a genre, 3 random tracks will be chosen from it. \n" +
         "Guess info about the song and press 'Reveal Info' to see if you were right! \n" +
@@ -146,7 +159,6 @@ public class OmegaApp extends Application {
         appInfoBox.getChildren().add(appInfo);
         appInfoBox.getStyleClass().add("app-info-normal");
         appInfoBox.setAlignment(Pos.CENTER);
-        mainContent.getChildren().addAll(genreBox, lyricBox);
         root.getChildren().addAll(attribution,title,instructions);
         root.getChildren().addAll(mainContent,appInfoBox);
         /*// demonstrate how to load local asset using "file:resources/"
@@ -259,12 +271,10 @@ public class OmegaApp extends Application {
     }
 
     public void getTopTracks(String tag, Button[] genreButtons) {
-        runNow(() -> {
-            Platform.runLater(() -> disableButtons());
-            Platform.runLater(() -> appInfo.setText("Loading..."));
-            Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-loading"));
-            }
-            );
+        Platform.runLater(() -> disableButtons());
+        Platform.runLater(() -> appInfo.setText("Loading..."));
+        Platform.runLater(() -> appInfoBox.getStyleClass().clear());
+        Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-loading"));
 
         for (int i = 0; i < lyricDisplays.length; i++) {
             lyricDisplays[i].hideInfo();
@@ -336,26 +346,33 @@ public class OmegaApp extends Application {
                     .build();
                 HttpResponse<String> response = HTTP_CLIENT
                     .send(request, BodyHandlers.ofString());
-                if (response.statusCode() != 200) {
-                    System.out.println("Something is wrong.");
-                }
                 String jsonString = response.body();
+                System.out.println(response.statusCode());
                 System.out.println(jsonString);
-                TrackSearchResponse searchResponse =
-                    GSON.fromJson(jsonString, cs1302.omega.mmsearch.TrackSearchResponse.class);
-                // make response into track search object
-                MMTrack topResult =
-                    searchResponse.getMessage().getBody().getTrackList()[0].getTrack();
-                if(topResult.getHasLyrics() > 0){
-                    MMTrack chosen = topResult;
-                    mmIds[count] = chosen.getTrackID();
-                    chosenTrackNames[count] = chosen.getTrackName();
-                    chosenTrackArtists[count] = chosen.getArtistName();
-                    count++;
+                if (jsonString.contains("“status_code”: 200")) {
+                    TrackSearchResponse searchResponse =
+                        GSON.fromJson(jsonString, cs1302.omega.mmsearch.TrackSearchResponse.class);
+                    if (searchResponse.getMessage().getBody()
+                    .getTrackList()[0].getTrack() instanceof MMTrack){
+                        MMTrack topResult =
+                            searchResponse.getMessage().getBody().getTrackList()[0].getTrack();
+                        if(topResult.getHasLyrics() > 0){
+                            MMTrack chosen = topResult;
+                            mmIds[count] = chosen.getTrackID();
+                            chosenTrackNames[count] = chosen.getTrackName();
+                            chosenTrackArtists[count] = chosen.getArtistName();
+                            count++;
+                        }
+                    }
+                int chosenTracks[] = getRandomNums(3, mmIds.length);
+                getSnippet();
+                } else {
+                    Platform.runLater(() -> appInfo.setText("Looks like this program reached its" +
+                    " limit for API calls from Musixmatch. \n Try again tomorrow!"));
+                    Platform.runLater(() -> appInfoBox.getStyleClass().clear());
+                    Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-error"));
                 }
             }
-            int chosenTracks[] = getRandomNums(3, mmIds.length);
-            getSnippet();
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
             e.printStackTrace();
@@ -366,12 +383,9 @@ public class OmegaApp extends Application {
         try {
             snippets = new String[mmIds.length];
             if(mmIds.length < 3){
-                runNow(() -> {
                     Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-error"));
                     Platform.runLater(() -> appInfo.setText("Looks like this genre doesn't have" +
-                    " lyrical songs, try another!"));
-                    }
-                    );
+                    " enough songs, try another!"));
             } else {
                 int[] randomTracks = getRandomNums(3, mmIds.length);
                 for(int i = 0; i < 3; i++){
@@ -384,19 +398,31 @@ public class OmegaApp extends Application {
                         .build();
                     HttpResponse<String> response = HTTP_CLIENT
                         .send(request, BodyHandlers.ofString());
-                    if (response.statusCode() != 200) {
-                        System.out.println("Something is wrong.");
-                    }
                     String jsonString = response.body();
-                    SnippetResponse snippetResponse =
-                        GSON.fromJson(jsonString, cs1302.omega.mmsnippet.SnippetResponse.class);
-                    //get snippet and add to array
-                    snippets[i] = snippetResponse.getMessage()
-                        .getBody().getSnippet().getSnippetBody();
+                    System.out.println(jsonString);
+                    if(jsonString.contains("“status_code”: 200")) {
+                        SnippetResponse snippetResponse =
+                            GSON.fromJson(jsonString, cs1302.omega.mmsnippet.SnippetResponse.class);
+                        //get snippet and add to array
+                        String temp = snippetResponse.getMessage()
+                            .getBody().getSnippet().getSnippetBody();
+                        snippets[i] = temp;
+                    }
                 }
-                updateLyricDisplays(randomTracks);
+                if (snippets.length < 3) {
+                        Platform.runLater(() -> appInfo.setText("Looks like we don't have" +
+                        " enough lyrics? \n Try again!"));
+                        Platform.runLater(() -> appInfoBox.getStyleClass().clear());
+                        Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-error"));
+                } else {
+                    Platform.runLater(() -> updateLyricDisplays(randomTracks));
+                    Platform.runLater(() -> appInfo.setText("Click again for more" +
+                    " or try another genre"));
+                    Platform.runLater(() -> appInfoBox.getStyleClass().clear());
+                    Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-loaded"));
+                }
             }
-            runNow(() -> Platform.runLater(() -> disableButtons()));
+            Platform.runLater(() -> enableButtons());
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
             e.printStackTrace();
