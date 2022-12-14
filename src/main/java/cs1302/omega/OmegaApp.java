@@ -270,15 +270,19 @@ public class OmegaApp extends Application {
         return randomNums;
     }
 
+    public void resetSnippets(){
+        for (int i = 0; i < lyricDisplays.length; i++){
+            lyricDisplays[i].hideInfo();
+            lyricDisplays[i].setLyricSnippet("Lyrics coming soon...");
+        }
+    }
+
     public void getTopTracks(String tag, Button[] genreButtons) {
         Platform.runLater(() -> disableButtons());
         Platform.runLater(() -> appInfo.setText("Loading..."));
         Platform.runLater(() -> appInfoBox.getStyleClass().clear());
         Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-loading"));
-
-        for (int i = 0; i < lyricDisplays.length; i++) {
-            lyricDisplays[i].hideInfo();
-        }
+        Platform.runLater(() -> resetSnippets());
         try {
             String modTag = URLEncoder.encode(tag, StandardCharsets.UTF_8);
             String query = String.format
@@ -305,9 +309,6 @@ public class OmegaApp extends Application {
                 topTrackArtists[i] = track.getArtist().getName();
             }
             trackSearch();
-            /*for(int i = 0; i < genreButtons.length; i++){
-                genreButtons[i].setDisable(false);
-                }*/
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
             e.printStackTrace();
@@ -333,6 +334,7 @@ public class OmegaApp extends Application {
             mmIds = new int[topTrackNames.length];
             chosenTrackNames = new String[topTrackNames.length];
             chosenTrackArtists = new String[topTrackNames.length];
+            boolean getSnippets = true;
             for(int i = 0; i < topTrackNames.length; i++){
                 String artist = URLEncoder.encode(topTrackArtists[i], StandardCharsets.UTF_8);
                 String track = URLEncoder.encode(topTrackNames[i], StandardCharsets.UTF_8);
@@ -349,7 +351,7 @@ public class OmegaApp extends Application {
                 String jsonString = response.body();
                 System.out.println(response.statusCode());
                 System.out.println(jsonString);
-                if (jsonString.contains("“status_code”: 200")) {
+                if (jsonString.contains("\"status_code\":200")) {
                     TrackSearchResponse searchResponse =
                         GSON.fromJson(jsonString, cs1302.omega.mmsearch.TrackSearchResponse.class);
                     if (searchResponse.getMessage().getBody()
@@ -364,14 +366,16 @@ public class OmegaApp extends Application {
                             count++;
                         }
                     }
-                int chosenTracks[] = getRandomNums(3, mmIds.length);
-                getSnippet();
                 } else {
+                    getSnippets = false;
                     Platform.runLater(() -> appInfo.setText("Looks like this program reached its" +
                     " limit for API calls from Musixmatch. \n Try again tomorrow!"));
                     Platform.runLater(() -> appInfoBox.getStyleClass().clear());
                     Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-error"));
                 }
+            }
+            if(getSnippets){
+                getSnippet();
             }
         } catch (IOException | InterruptedException e) {
             System.err.println(e);
@@ -381,8 +385,9 @@ public class OmegaApp extends Application {
 
     public void getSnippet() {
         try {
+            int count = 0;
             snippets = new String[mmIds.length];
-            if(mmIds.length < 3){
+            if(mmIds.length < 6){
                     Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-error"));
                     Platform.runLater(() -> appInfo.setText("Looks like this genre doesn't have" +
                     " enough songs, try another!"));
@@ -400,24 +405,28 @@ public class OmegaApp extends Application {
                         .send(request, BodyHandlers.ofString());
                     String jsonString = response.body();
                     System.out.println(jsonString);
-                    if(jsonString.contains("“status_code”: 200")) {
+                    if(jsonString.contains("\"status_code\":200")) {
                         SnippetResponse snippetResponse =
                             GSON.fromJson(jsonString, cs1302.omega.mmsnippet.SnippetResponse.class);
                         //get snippet and add to array
                         String temp = snippetResponse.getMessage()
                             .getBody().getSnippet().getSnippetBody();
-                        snippets[i] = temp;
+                        if(temp.length() > 2){
+                            snippets[i] = temp;
+                            count++;
+                        }
                     }
                 }
-                if (snippets.length < 3) {
-                        Platform.runLater(() -> appInfo.setText("Looks like we don't have" +
-                        " enough lyrics? \n Try again!"));
+                if (count < 3) {
+                        Platform.runLater(() -> appInfo.setText("We might not have" +
+                        " enough lyrics for this genre? \n Try a different one or test" +
+                        " your luck again!"));
                         Platform.runLater(() -> appInfoBox.getStyleClass().clear());
                         Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-error"));
                 } else {
                     Platform.runLater(() -> updateLyricDisplays(randomTracks));
                     Platform.runLater(() -> appInfo.setText("Click again for more" +
-                    " or try another genre"));
+                    " or try another genre!"));
                     Platform.runLater(() -> appInfoBox.getStyleClass().clear());
                     Platform.runLater(() -> appInfoBox.getStyleClass().add("app-info-loaded"));
                 }
