@@ -17,6 +17,8 @@ I did the External API tool category, using the LastFM and Musixmatch APIs.
 
 Users can choose a genre/category of music they like and receive 3 random lyric snippets from top tracks in that category. From just the snippet, the users guess the track name and artist info, and click a "reveal info" button to see if they were right. Users can choose between different genres, pressing the "shuffle" button for additional or retesting the same one.
 
+Link to repo: https://github.com/avran-v/cs1302-omega
+
 
 ## Part 2: New
 
